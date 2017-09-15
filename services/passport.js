@@ -21,23 +21,19 @@ passport.use(new googleStrategy({
     clientID : keys.googleClientID,
     clientSecret : keys.googleClientSecret,
     callbackURL : '/auth/google/callback'
-},(accessToken,refreshToken,profile,done) => {
-    User.findOne({googleId: profile.id})
-    .then( (existingUser ) => {
-        if(existingUser){
-            //a user found, not going to add
-            //completes without any error, with the existing record
-            done(null, existingUser)
-        } else {
-             //adding a new user, they must fulfill the schema
-            new User({ googleId: profile.id }).save()
-            .then( (user) => {
-                //completes without error, with a new record
-                done(null,user)
-            })
+}, async (accessToken,refreshToken,profile,done) => {
+    const existingUser = await User.findOne({googleId: profile.id})
+    
+    if(existingUser){
+        //a user found, not going to add
+        //completes without any error, with the existing record
+        done(null, existingUser)
+    } else {
+        //adding a new user, they must fulfill the schema
+        const user = await new User({ googleId: profile.id }).save()
+           
+        //completes without error, with a new record
+        done(null,user)
+            
         }
-    })
-   
-
-})
-);
+}));

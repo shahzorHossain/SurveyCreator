@@ -9,6 +9,7 @@ const keys = require('./config/keys.js')
 
 const mongoose = require('mongoose')
 const app = express();
+
 app.use(cookieSession({
 
     maxAge: 30 * 24 * 60 * 60 * 1000,
